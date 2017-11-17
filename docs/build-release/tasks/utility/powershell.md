@@ -13,7 +13,7 @@ ms.date: 08/10/2016
 
 [!INCLUDE [temp](../../_shared/version-tfs-2015-rtm.md)]
 
-![](_img/powershell.png) Run a PowerShell script
+![](_img/powershell.png) Run a PowerShell script from a file or an inline script definition.
 
 ## Demands
 
@@ -23,14 +23,17 @@ DotNetFramework
 
 | Argument | Description |
 | -------- | ----------- |
-| Script filename | Specify the path to the script to you want to run. The path must be a fully qualified path or a valid path relative to the default working directory. In Team Foundation Build, this directory is [$(Build.SourcesDirectory)](../../concepts/definitions/build/variables.md). |
-| Arguments | Specify arguments to pass to the script. You can use ordinal or named parameters. |
+| Type | Specify whether to use a file or an inline script |
+| Script Path | Specify the path to the script to you want to run. The path must be a fully qualified path or a valid path relative to the default working directory. In Team Foundation Build, this directory is [$(Build.SourcesDirectory)](../../concepts/definitions/build/variables.md).  This can only be specified if `Type` is File Path |
+| Inline Script | The script content to execute.  There is a 500 character limit for inline script definitions.  This can only be specified if `Type` is Inline Script |
+| Arguments | Specify arguments to pass to the script.  These arguments will be interpreted the same way as they would by a regular powershell script. |
 | Advanced - Working folder | Specify the working directory in which you want to run the script. If you leave it empty, the working directory is the folder where the script is located. |
 | [!INCLUDE [control-options-arguments-md](../_shared/control-options-arguments-md.md)] | |
 
 ## Examples
+For all of these examples you need to add a ![](_img/powershell.png) **Utility: PowerShell** build step on the Build tab of a build definition.
 
-### Hello World
+### Run a script from a path
 
 Create ```test.ps1``` at the root of your repo:
 
@@ -45,12 +48,17 @@ Write-Host "BUILD_SOURCESDIRECTORY contents:"
 gci $Env:BUILD_SOURCESDIRECTORY
 Write-Host "Over and out."
 ```
+**Arguments**
+* **Display Name:** Run script from file.
+* **Type:** Script Path
+* **Script Path**: `test.ps1`
 
-On the Build tab of a build definition, add this step:
+### Run an inline script
 
-| Task | Arguments |
-| ---- | --------- |
-| ![](_img/powershell.png)<br/>**Utility: PowerShell** | Run test.ps1.<br /><br />**Script filename**: `test.ps1` |
+* **Display Name:** Run script from file.
+* **Type:** Script Path
+* **Inline Script**: ```psWrite-Host "Hello World from $Env:AGENT_NAME."```
+
 
 ### Write a warning
 
